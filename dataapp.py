@@ -25,6 +25,11 @@ st.markdown(f"""
         padding: 10px;
         margin-top: 20px;
     }}
+    .footer {{
+        padding: 10px;
+        margin-top: 20px;
+        text-align: center;
+    }}
     </style>
 """, unsafe_allow_html=True)
 
@@ -33,7 +38,6 @@ st.markdown(f"""
         <div class="header">
             <h1>Data Analysis and Visualization Web App</h1>
         </div>
-      
     </div>
 """, unsafe_allow_html=True)
 
@@ -230,7 +234,13 @@ if page == "App":
     else:
         st.write("Please upload a CSV file to get started.")
 
-else:
+    st.markdown(f"""
+        <div class="footer">
+            <p><i>This app was developed by Omar Kamel.</i></p>
+        </div>
+    """, unsafe_allow_html=True)
+
+elif page == "User Manual":
     st.markdown(f"""
         <div class="user-manual">
             <h2>User Manual for Data Analysis and Visualization Web App</h2>
@@ -276,6 +286,5 @@ else:
                 <li><b>Select Column:</b> Choose a column to display the distribution of its values. This shows how frequently each value appears in the column.</li>
                 <li><b>Show Distribution Plot:</b> Click this button to display a histogram of the column's values. A histogram is a graphical representation of the distribution of numerical data.</li>
             </ul>
-            <p><i>This app was developed by Omar Kamel.</i></p>
         </div>
     """, unsafe_allow_html=True)
