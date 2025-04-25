@@ -2,27 +2,9 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# --- App Style ---
-APP_COLOR = "#009999"  # Siemens green
-
+# --- App Setup ---
 st.set_page_config(page_title="Data Analysis App", layout="wide")
-
-# --- Custom CSS ---
-st.markdown(f"""
-    <style>
-    .main {{ background-color: {APP_COLOR}; }}
-    .stApp {{ color: white; }}
-    .stButton>button {{
-        background-color: #007777; color: white; border: none;
-        padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;
-    }}
-    .stButton>button:hover {{ background-color: #005555; }}
-    .header h1 {{ font-size: 2rem; color: {APP_COLOR}; margin-bottom: 1rem; }}
-    </style>
-""", unsafe_allow_html=True)
-
-# --- Header ---
-st.markdown(f"<h1 class='header'>Data Analysis and Visualization Web App</h1>", unsafe_allow_html=True)
+st.title("Data Analysis and Visualization Web App")
 
 # --- Load CSV ---
 @st.cache_data
@@ -45,26 +27,22 @@ def filter_data(df, conditions):
 def plot_data(df, x, y, kind='line'):
     plt.figure(figsize=(10, 5))
     if kind == 'line':
-        plt.plot(df[x], df[y], marker='o', color='#ffcc00')
+        plt.plot(df[x], df[y], marker='o')
     else:
-        plt.bar(df[x], df[y], color='#ffcc00')
-    plt.title(f'{y} vs {x}', color='white')
-    plt.xlabel(x, color='white')
-    plt.ylabel(y, color='white')
+        plt.bar(df[x], df[y])
+    plt.title(f'{y} vs {x}')
+    plt.xlabel(x)
+    plt.ylabel(y)
     plt.grid(True)
-    plt.gca().set_facecolor(APP_COLOR)
-    plt.gca().tick_params(colors='white')
     st.pyplot(plt)
 
 def plot_counts(df, column):
     plt.figure(figsize=(10, 5))
-    df[column].value_counts().plot(kind='bar', color='#ffcc00')
-    plt.title(f'Value Counts in {column}', color='white')
-    plt.xlabel(column, color='white')
-    plt.ylabel('Count', color='white')
+    df[column].value_counts().plot(kind='bar')
+    plt.title(f'Value Counts in {column}')
+    plt.xlabel(column)
+    plt.ylabel('Count')
     plt.grid(True)
-    plt.gca().set_facecolor(APP_COLOR)
-    plt.gca().tick_params(colors='white')
     st.pyplot(plt)
 
 def plot_trend(df, date_col, value_col):
@@ -73,24 +51,22 @@ def plot_trend(df, date_col, value_col):
     df.set_index(date_col, inplace=True)
     trend = df[value_col].resample('M').mean()
     plt.figure(figsize=(10, 5))
-    trend.plot(color='#ffcc00')
-    plt.title(f'Trend of {value_col}', color='white')
-    plt.xlabel('Date', color='white')
-    plt.ylabel(value_col, color='white')
+    trend.plot()
+    plt.title(f'Trend of {value_col}')
+    plt.xlabel('Date')
+    plt.ylabel(value_col)
     plt.grid(True)
-    plt.gca().set_facecolor(APP_COLOR)
-    plt.gca().tick_params(colors='white')
     st.pyplot(plt)
 
 # --- App Logic ---
-uploaded_file = st.file_uploader("📁 Upload your CSV file", type="csv")
+uploaded_file = st.file_uploader("Upload your CSV file", type="csv")
 if uploaded_file:
     df = load_data(uploaded_file)
     if not df.empty:
-        st.subheader("📋 Raw Data Preview")
+        st.subheader("Raw Data Preview")
         st.dataframe(df.head())
 
-        st.subheader("🔍 Filter Options")
+        st.subheader("Filter Options")
         filters = {}
         add_more = True
         key = 0
@@ -110,7 +86,7 @@ if uploaded_file:
             st.success(f"{len(filtered_df)} rows after filtering.")
             st.dataframe(filtered_df.head())
 
-            st.subheader("📈 Visualize Data")
+            st.subheader("Visualize Data")
             col1, col2 = st.columns(2)
             with col1:
                 x_col = st.selectbox("X-axis", filtered_df.columns)
@@ -121,19 +97,19 @@ if uploaded_file:
             if st.button("Generate Plot"):
                 plot_data(filtered_df, x_col, y_col, plot_type)
 
-            st.subheader("📊 Value Counts")
+            st.subheader("Value Counts")
             count_col = st.selectbox("Column for Value Count", filtered_df.columns)
             if st.button("Show Value Counts"):
                 st.dataframe(filtered_df[count_col].value_counts())
                 plot_counts(filtered_df, count_col)
 
-            st.subheader("📉 Trend Over Time")
+            st.subheader("Trend Over Time")
             date_col = st.selectbox("Date Column", filtered_df.columns)
             val_col = st.selectbox("Value Column", filtered_df.columns)
             if st.button("Show Trend"):
                 plot_trend(filtered_df, date_col, val_col)
 
-            st.download_button("📥 Download Filtered CSV", data=filtered_df.to_csv(index=False), file_name="filtered_data.csv")
+            st.download_button("Download Filtered CSV", data=filtered_df.to_csv(index=False), file_name="filtered_data.csv")
         else:
             st.warning("No data matched your filter criteria.")
 else:
